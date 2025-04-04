@@ -13,15 +13,16 @@ public class TransaksiSwalayan {
         System.out.print("Masukkan PIN: ");
         String pin = scanner.next(); // Input PIN
 
-        Pelanggan pelanggan = new Pelanggan(nama, nomorPelanggan, saldo, pin); // Membuat objek pelanggan
-
         // Validasi nomor pelanggan
         if (nomorPelanggan.length() != 10 || 
             !(nomorPelanggan.startsWith("38") || nomorPelanggan.startsWith("56") || nomorPelanggan.startsWith("74"))) {
-            System.out.println("Nomor pelanggan tidak valid!");// Tampilkan pesan jika nomor tidak valid
+            System.out.println("Nomor pelanggan tidak valid!"); // Tampilkan pesan jika nomor tidak valid
             scanner.close(); 
             return; // Keluar dari program
         }
+
+        Pelanggan pelanggan = new Pelanggan(nama, nomorPelanggan, saldo, pin); // Membuat objek pelanggan
+        System.out.println("Status pelanggan: " + pelanggan.getStatus()); // Tampilkan status pelanggan
 
         // Menu transaksi
         while (true) {

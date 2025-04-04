@@ -8,6 +8,7 @@ class Pelanggan {
     private String pin; // PIN untuk autentikasi
     private int percobaanGagal = 0; // Menghitung jumlah percobaan gagal untuk autentikasi
     private boolean diblokir = false; // Status akun apakah diblokir atau tidak
+    private String status; // Status pelanggan (silver, gold, platinum)
 
     // Constructor untuk inisialisasi objek Pelanggan
     public Pelanggan(String nama, String nomorPelanggan, int saldo, String pin) {
@@ -15,27 +16,43 @@ class Pelanggan {
         this.nomorPelanggan = nomorPelanggan; // Menginisialisasi nomor pelanggan
         this.saldo = saldo; // Menginisialisasi saldo pelanggan
         this.pin = pin; // Menginisialisasi PIN pelanggan
+        this.status = tentukanStatus(nomorPelanggan); // Menentukan status pelanggan
+    }
+
+    private String tentukanStatus(String nomorPelanggan) {
+        String kodeJenis = nomorPelanggan.substring(0, 2); // Ambil 2 digit pertama dari nomor pelanggan
+        switch (kodeJenis) {
+            case "38":
+                return "Silver";
+            case "56":
+                return "Gold";
+            case "74":
+                return "Platinum";
+            default:
+                return "Tidak Dikenal";
+        }
     }
 
     public void setNama(String nama) {
         this.nama = nama;
     }
-    
+
     public String getNama() {
         return nama;
     }
 
-    // Getter untuk nomor pelanggan
     public String getNomorPelanggan() {
         return nomorPelanggan; // Mengembalikan nomor pelanggan
     }
 
-    // Mengecek apakah akun diblokir
+    public String getStatus() {
+        return status; // Mengembalikan status pelanggan
+    }
+
     public boolean isDiblokir() {
         return diblokir; // Mengembalikan status blokir akun
     }
 
-    // Metode untuk autentikasi menggunakan PIN
     public boolean autentikasi(String pinInput) {
         if (diblokir) { // Jika akun diblokir
             System.out.println("Akun Anda telah diblokir."); // Tampilkan pesan
@@ -56,13 +73,11 @@ class Pelanggan {
         }
     }
 
-    // Metode untuk melakukan top-up saldo
     public void topUp(int jumlah) {
         saldo += jumlah; // Tambahkan jumlah top-up ke saldo
         System.out.println("Top-up berhasil! Saldo saat ini: Rp" + saldo); // Tampilkan saldo saat ini
     }
 
-    // Metode untuk melakukan pembelian
     public void beli(int jumlah) {
         if (jumlah > saldo) { // Jika jumlah pembelian lebih besar dari saldo
             System.out.println("Saldo tidak cukup!"); // Tampilkan pesan
@@ -83,18 +98,19 @@ class Pelanggan {
         }
     }
 
-    // Metode untuk menghitung cashback berdasarkan jenis pelanggan
     private int hitungCashback(int jumlah) {
         String kodeJenis = nomorPelanggan.substring(0, 2); // Ambil 2 digit pertama dari nomor pelanggan
         int cashback = 0; // Inisialisasi cashback
 
         // Hitung cashback berdasarkan jenis pelanggan
         if (kodeJenis.equals("38")) { // Silver
-            if (jumlah > 1000000) cashback = (int) ( jumlah * 0.05); // 5% cashback untuk pembelian di atas Rp1.000.000
+            if (jumlah > 1000000) cashback = (int) (jumlah * 0.05); // 5% cashback untuk pembelian di atas Rp1.000.000
         } else if (kodeJenis.equals("56")) { // Gold
-            if (jumlah > 500000) cashback = (int) (jumlah * 0.1); // 10% cashback untuk pembelian di atas Rp500.000
+            if (jumlah > 1000000) cashback = (int) (jumlah * 0.07); // 7% cashback untuk pembelian di atas Rp1.000.000
+            else if (jumlah > 500000) cashback = (int) (jumlah * 0.02); // 2% cashback untuk pembelian di atas Rp500.000
         } else if (kodeJenis.equals("74")) { // Platinum
-            cashback = (int) (jumlah * 0.15); // 15% cashback untuk semua pembelian
+            if (jumlah > 1000000) cashback = (int) (jumlah * 0.10); // 10% cashback untuk pembelian di atas Rp1.000.000
+            else cashback = (int) (jumlah * 0.05); // 5% cashback untuk semua pembelian
         }
         return cashback; // Kembalikan nilai cashback
     }
